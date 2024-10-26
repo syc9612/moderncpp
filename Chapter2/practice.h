@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <string>
 
 class solver{
     private:
@@ -51,3 +52,67 @@ class vector{
 */
 
 };
+
+//이동생성자 구현
+class MoveConstructor{
+    private:
+    std::string* data;
+
+    public:
+    // 기본 생성자
+    MoveConstructor(const std::string& value){
+        data = new std::string(value);
+        std::cout << "call normal constructor \n";
+    }
+
+    // 이동 생성자 (noexcept 추가)
+    MoveConstructor(MoveConstructor&& other) noexcept {
+        data = other.data;
+        other.data = nullptr;
+        std::cout << "call move Constructor (noexcept) \n";
+    }
+
+    // 복사 생성자와 복사 대입 연산자를 삭제하여 이동만 가능하게 함.
+    MoveConstructor(const MoveConstructor&) = delete;
+    MoveConstructor& operator=(cost MoveConstructor&) = delete;
+
+    //이동 대입 연산자 (noexcpet 추가)
+    MoveConstructor& operator=(MoveConstructor&& other) noexcept{
+        if(this != &other){
+            delete data;
+            data = ohter.data;
+            other.data= nullptr;
+            std::cout << "call the move into constuctor(noexcept)\n";
+        }
+        return *this;
+    }
+    ~MoveConstructor(){
+        delete data;
+    }
+    void print() const{
+        if (data){
+            std::cout << "Data: " << *data << "\n";
+        }
+        else{
+            std::cout << "No data in here\n";
+        }
+    }
+};
+
+/*
+int main() {
+    MyClass obj1("Hello");
+    MyClass obj2(std::move(obj1)); // 이동 생성자 호출
+
+    obj1.print(); // obj1의 데이터가 이동되어 nullptr이 됨
+    obj2.print(); // obj2는 이동된 데이터 소유
+
+    MyClass obj3("World");
+    obj3 = std::move(obj2);        // 이동 대입 연산자 호출
+
+    obj2.print(); // obj2의 데이터가 이동되어 nullptr이 됨
+    obj3.print(); // obj3은 이동된 데이터 소유
+
+    return 0;
+}
+*/
